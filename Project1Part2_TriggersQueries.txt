@@ -1,0 +1,231 @@
+-- TRIGGERS
+-- Trigger 1:
+CREATE OR REPLACE TRIGGER trg_check_common_discipline
+BEFORE UPDATE ON MEMBERS
+FOR EACH ROW
+DECLARE
+    v_common_discipline_count INT;
+BEGIN
+    -- Check if research_group_code is not NULL
+    IF :NEW.research_group_code IS NOT NULL THEN
+        -- Count the common disciplines between the associations of the researcher and the research group.
+        SELECT COUNT(DISTINCT gd.discipline_code)
+        INTO v_common_discipline_count
+        FROM MEMBERS_ASSOCIATION ma -- Using ma as an alias of MEMBERS_ASSOCIATION table.
+        JOIN ASSOCIATION a ON ma.association_name = a.name
+        JOIN GROUP_DISCIPLINE gd ON gd.group_code = :NEW.research_group_code
+        WHERE ma.member_code = :NEW.code
+        AND a.DISCIPLINE_code = gd.discipline_code;
+
+        -- If there are no common disciplines, raise an exception
+        IF v_common_discipline_count = 0 THEN
+            RAISE_APPLICATION_ERROR(-20001, 'The researcher must have at least one association with a common discipline to the research group.');
+        END IF;
+    END IF;
+END;
+/
+
+-- Trigger 2:
+CREATE OR REPLACE TRIGGER trg_before_payment_insert
+BEFORE INSERT ON MEMBERS_FEE
+FOR EACH ROW
+DECLARE
+    v_end_date DATE;
+    v_start_date DATE;
+    v_years_of_membership NUMBER;
+BEGIN
+    -- Get the member's start and end date
+    SELECT start_date, end_date
+    INTO v_start_date, v_end_date
+    FROM MEMBERS
+    WHERE code = :NEW.code_member;
+
+    -- If the member has an end date (i.e. left)
+    IF v_end_date IS NOT NULL THEN
+        -- Calculate Membership Years
+        v_years_of_membership := EXTRACT(YEAR FROM v_end_date) - EXTRACT(YEAR FROM v_start_date);
+        
+        -- If membership years are more than 5, raise an error
+        IF v_years_of_membership > 5 THEN
+            RAISE_APPLICATION_ERROR(-20002, 'Cannot register a payment for a member who has left the confederation or is retired and has more than five years of membership.');
+        END IF;
+    END IF;
+END;
+/
+
+-- Trigger 3:
+CREATE OR REPLACE TRIGGER trg_before_social_network_insert
+BEFORE INSERT ON SOCIAL_NETWORK
+FOR EACH ROW
+DECLARE
+    v_max_code INT;
+BEGIN
+    -- Get the current maximum value of 'code' in the table.
+    SELECT NVL(MAX(code), 0)
+    INTO v_max_code
+    FROM SOCIAL_NETWORK;
+    
+    -- If it is the first record, assign code 1. Otherwise, assign the next sequential number.
+    IF v_max_code = 0 THEN
+        :NEW.code := 1;
+    ELSE
+        :NEW.code := v_max_code + 1;
+    END IF;
+END;
+/
+
+-- QUERIES
+-- Query 1:
+-- Enable DBMS_OUTPUT for printing
+SET SERVEROUTPUT ON;
+
+DECLARE
+    total_associations NUMBER;
+    active_member_count NUMBER;
+    ratio NUMBER;
+BEGIN
+    -- Retrieve the total number of associations
+    SELECT COUNT(DISTINCT association_name) INTO total_associations FROM MEMBERS_ASSOCIATION;
+
+    -- Retrieve the count of active members from MEMBERS
+    SELECT COUNT(DISTINCT MA.member_code) INTO active_member_count
+    FROM MEMBERS_ASSOCIATION MA
+    JOIN MEMBERS M ON MA.member_code = M.code
+    WHERE M.end_date IS NULL;
+
+    -- Calculate the ratio and round to 3 decimal places
+    IF total_associations > 0 THEN
+        ratio := ROUND(active_member_count / total_associations, 3);
+    ELSE
+        -- Handle the case where total_associations is 0 to avoid division by zero
+        ratio := NULL;
+    END IF;
+
+    -- Print the result
+    DBMS_OUTPUT.PUT_LINE('Total Associations: ' || total_associations);
+    DBMS_OUTPUT.PUT_LINE('Active Members in All Associations: ' || active_member_count);
+
+    IF ratio IS NOT NULL THEN
+        DBMS_OUTPUT.PUT_LINE('Average # of Active Members for Each Association (rounded to 3 decimal places): ' || ratio);
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Average # of Active Members cannot be calculated (total_associations is 0).');
+    END IF;
+END;
+/
+
+
+-- Query 2:
+-- Enable DBMS_OUTPUT for printing
+SET SERVEROUTPUT ON;
+
+DECLARE
+    CURSOR dues_cursor IS
+        SELECT 
+            MEMBERS_ASSOCIATION.association_name,
+            EXTRACT(YEAR FROM SYSDATE) AS year,
+            SUM(FEE.fee) AS total_dues
+        FROM 
+            MEMBERS_ASSOCIATION
+        JOIN MEMBERS_FEE ON MEMBERS_ASSOCIATION.member_code = MEMBERS_FEE.code_member
+        JOIN FEE ON MEMBERS_FEE.code_fee = FEE.code
+        GROUP BY 
+            MEMBERS_ASSOCIATION.association_name, EXTRACT(YEAR FROM SYSDATE)
+        ORDER BY 
+            MEMBERS_ASSOCIATION.association_name; -- Change to ascending order
+
+    association_name_val VARCHAR2(255);
+    year_val NUMBER;
+    total_dues_val NUMBER;
+BEGIN
+    OPEN dues_cursor;
+
+    LOOP
+        FETCH dues_cursor INTO association_name_val, year_val, total_dues_val;
+        EXIT WHEN dues_cursor%NOTFOUND;
+
+        -- Print the result
+        DBMS_OUTPUT.PUT_LINE('Association: ' || association_name_val || ', Year: ' || year_val || ', Total Dues: ' || total_dues_val);
+    END LOOP;
+
+    CLOSE dues_cursor;
+END;
+/
+
+-- Query 3:
+-- Enable DBMS_OUTPUT for printing
+SET SERVEROUTPUT ON;
+
+DECLARE
+    CURSOR awards_cursor IS
+        SELECT 
+            MEMBERS_ASSOCIATION.association_name,
+            COUNT(PRIZE.prize_category) AS number_of_awards
+        FROM 
+            MEMBERS_ASSOCIATION
+        JOIN MEMBERS ON MEMBERS_ASSOCIATION.member_code = MEMBERS.code
+        LEFT JOIN PRIZE ON MEMBERS.code = PRIZE.code_member
+        GROUP BY 
+            MEMBERS_ASSOCIATION.association_name
+        ORDER BY 
+            number_of_awards DESC;
+
+    association_name_val VARCHAR2(255);
+    number_of_awards_val NUMBER;
+BEGIN
+    OPEN awards_cursor;
+
+    LOOP
+        FETCH awards_cursor INTO association_name_val, number_of_awards_val;
+        EXIT WHEN awards_cursor%NOTFOUND;
+
+        -- Print the result
+        DBMS_OUTPUT.PUT_LINE('Association: ' || association_name_val || ', Number of Awards: ' || number_of_awards_val);
+    END LOOP;
+
+    CLOSE awards_cursor;
+END;
+/
+
+-- Query 4:
+-- Enable DBMS_OUTPUT for printing
+SET SERVEROUTPUT ON;
+
+DECLARE
+    CURSOR fees_paid_cursor IS
+        SELECT 
+            MEMBERS.name || ' ' || MEMBERS.surname AS member_name,
+            FEE.type AS fee_type,
+            SUM(FEE.fee) AS total_fees_paid
+        FROM 
+            MEMBERS
+        JOIN MEMBERS_FEE ON MEMBERS.code = MEMBERS_FEE.code_member
+        JOIN FEE ON MEMBERS_FEE.code_fee = FEE.code
+        WHERE 
+            MEMBERS_FEE.year >= 2020
+        GROUP BY 
+            MEMBERS.name, MEMBERS.surname, FEE.type
+        ORDER BY 
+            member_name, fee_type;
+
+    member_name_val VARCHAR2(255);
+    fee_type_val VARCHAR2(255);
+    total_fees_paid_val NUMBER;
+BEGIN
+    OPEN fees_paid_cursor;
+
+    LOOP
+        FETCH fees_paid_cursor INTO member_name_val, fee_type_val, total_fees_paid_val;
+        EXIT WHEN fees_paid_cursor%NOTFOUND;
+
+        -- Print the result
+        DBMS_OUTPUT.PUT_LINE('Member Name: ' || member_name_val || ', Fee Type: ' || fee_type_val || ', Total Fees Paid: ' || total_fees_paid_val);
+    END LOOP;
+
+    CLOSE fees_paid_cursor;
+END;
+/
+
+
+
+
+

@@ -1,0 +1,203 @@
+-- The order in which data is inserted is important. It must also be taken into account for foreign keys and triggers
+-- DISCIPLINES
+INSERT INTO DISCIPLINES (name) VALUES ('Software Engineering');
+INSERT INTO DISCIPLINES (name) VALUES ('Artificial Intelligence');
+INSERT INTO DISCIPLINES (name) VALUES ('Security');
+INSERT INTO DISCIPLINES (name) VALUES ('Systems Architecture');
+INSERT INTO DISCIPLINES (name) VALUES ('Human-Computer Interaction');
+
+-- CATEGORY
+INSERT INTO CATEGORY(name) VALUES ('PhD student');
+INSERT INTO CATEGORY(name) VALUES ('PhD professor');
+INSERT INTO CATEGORY(name) VALUES ('assistant professor');
+INSERT INTO CATEGORY(name) VALUES ('full professor');
+INSERT INTO CATEGORY(name) VALUES ('retired');
+
+-- BOARD
+INSERT INTO BOARD (name) VALUES ('president');
+INSERT INTO BOARD (name) VALUES ('vice-president');
+INSERT INTO BOARD (name) VALUES ('secretary');
+INSERT INTO BOARD (name) VALUES ('treasurer');
+
+-- SOCIAL_NETWORK (trigger 3 is working)
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Twitter');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('LinkedIn');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Instagram');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Twitter');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('LinkedIn');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Instagram');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Twitter');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('LinkedIn');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Instagram');
+INSERT INTO SOCIAL_NETWORK(name) VALUES ('Instagram');
+
+-- RESEARCH_GROUP
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO1', 'GroupName1', 'http://group1.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO2', 'GroupName2', 'http://group2.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO3', 'GroupName3', 'http://group3.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO4', 'GroupName4', 'http://group4.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO5', 'GroupName5', 'http://group5.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO6', 'GroupName6', 'http://group6.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO7', 'GroupName7', 'http://group7.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO8', 'GroupName8', 'http://group8.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO9', 'GroupName9', 'http://group9.com');
+INSERT INTO RESEARCH_GROUP (acronym, name, web) VALUES ('ACRO10', 'GroupName10', 'http://group10.com');
+
+-- GROUP_DISCIPLINE
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (1, 2);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (2, 3);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (3, 4);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (4, 5);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (5, 1);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (6, 2);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (7, 3);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (8, 4);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (9, 5);
+INSERT INTO GROUP_DISCIPLINE (group_code, discipline_code) VALUES (10, 1);
+
+-- ASSOCIATION
+-- We need to add associations before members because of the trigger that checks the disciplines. So we need to set up the community manager as null firstly (later can be updated)
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('TechUnion1', 'http://techunion1.com', 1);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('InnoGroup2', 'http://innogroup2.com', 2);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('SoftSociety3', 'http://softsociety3.com', 3);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('DataClub4', 'http://dataclub4.com', 4);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('NetWorks5', 'http://networks5.com', 5);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('FutureTech6', 'http://futuretech6.com', 1);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('SmartSolutions7', 'http://smartsolutions7.com', 2);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('AIConsortium8', 'http://aiconsortium8.com', 3);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('CyberCircle9', 'http://cybercircle9.com', 4);
+INSERT INTO ASSOCIATION (name, web, DISCIPLINE_code) VALUES ('UIUXGuild10', 'http://uiuxguild10.com', 5);
+
+-- MEMBERS
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name1', 'Surname1', 'email1@example.com', 'Affiliation1', 1, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name2', 'Surname2', 'email2@example.com', 'Affiliation2', 2, 'http://name2.com', 'Confederation', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name3', 'Surname3', 'email3@example.com', 'Affiliation3', 3, 'http://name3.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name4', 'Surname4', 'email4@example.com', 'Affiliation4', 4, 'http://name4.com', 'Confederation', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name5', 'Surname5', 'email5@example.com', 'Affiliation5', 5, 'http://name5.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name6', 'Surname6', 'email6@example.com', 'Affiliation6', 1, 'http://name6.com', 'Confederation', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name7', 'Surname7', 'email7@example.com', 'Affiliation7', 2, 'http://name7.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name8', 'Surname8', 'email8@example.com', 'Affiliation8', 3, 'http://name8.com', 'Confederation', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name9', 'Surname9', 'email9@example.com', 'Affiliation9', 4, 'http://name9.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name10', 'Surname10', 'email10@example.com', 'Affiliation10', 5, 'http://name10.com', 'Confederation', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name11', 'Surname11', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name12', 'Surname12', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name13', 'Surname13', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name14', 'Surname14', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name15', 'Surname15', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date) VALUES ('Name16', 'Surname16', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, SYSDATE);
+INSERT INTO MEMBERS (name, surname, email, affiliation, code_category, web, type, research_group_code, start_date, end_date) VALUES ('Name17', 'Surname17', 'email1@example.com', 'Affiliation1', NULL, 'http://name1.com', 'Association', NULL, TO_DATE('2001-11-15', 'YYYY-MM-DD'), TO_DATE('2023-11-15', 'YYYY-MM-DD'));
+
+-- MEMBERS_ASSOCIATION
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('TechUnion1', 1, 101);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('InnoGroup2', 2, 102);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('SoftSociety3', 3, 103);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('DataClub4', 4, 104);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('NetWorks5', 5, 105);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('FutureTech6', 6, 106);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('SmartSolutions7', 7, 107);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('AIConsortium8', 8, 108);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('CyberCircle9', 9, 109);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('UIUXGuild10', 10, 110);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('TechUnion1', 11, 111);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('TechUnion1', 12, 112);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('TechUnion1', 13, 113);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('InnoGroup2', 14, 114);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('InnoGroup2', 15, 115);
+INSERT INTO MEMBERS_ASSOCIATION (association_name, member_code, ass_number) VALUES ('InnoGroup2', 16, 116);
+
+--UPDATING MEMBERS: Adding a research_group (checking if the first trigger works)
+UPDATE MEMBERS SET research_group_code = 5 WHERE code = 1;
+UPDATE MEMBERS SET research_group_code = 1 WHERE code = 2;
+UPDATE MEMBERS SET research_group_code = 2 WHERE code = 3;
+UPDATE MEMBERS SET research_group_code = 3 WHERE code = 4;
+UPDATE MEMBERS SET research_group_code = 9 WHERE code = 5;
+UPDATE MEMBERS SET research_group_code = 10 WHERE code = 6;
+UPDATE MEMBERS SET research_group_code = 6 WHERE code = 7;
+UPDATE MEMBERS SET research_group_code = 7 WHERE code = 8;
+UPDATE MEMBERS SET research_group_code = 3 WHERE code = 9;
+UPDATE MEMBERS SET research_group_code = 4 WHERE code = 10;
+UPDATE MEMBERS SET research_group_code = 10 WHERE code = 11;
+UPDATE MEMBERS SET research_group_code = 5 WHERE code = 12;
+UPDATE MEMBERS SET research_group_code = 10 WHERE code = 13;
+UPDATE MEMBERS SET research_group_code = 6 WHERE code = 14;
+UPDATE MEMBERS SET research_group_code = 1 WHERE code = 15;
+UPDATE MEMBERS SET research_group_code = 6 WHERE code = 16;
+
+-- For example, this case doesn't work.
+-- UPDATE MEMBERS SET research_group_code = 5 WHERE code = 2;
+
+-- FEE
+INSERT INTO FEE (type, fee) VALUES ('memberAss', 320);
+INSERT INTO FEE (type, fee) VALUES ('noMemberAss', 420);
+INSERT INTO FEE (type, fee) VALUES ('student', 200);
+INSERT INTO FEE (type, fee) VALUES ('noStudent', 250);
+
+-- PRIZE
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('senior', 1, 2021);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('student', 2, 2022);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('senior', 3, 2023);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('student', 4, 2019);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('senior', 5, 2020);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('student', 6, 1983);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('senior', 7, 1976);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('student', 8, 2016);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('senior', 9, 2017);
+INSERT INTO PRIZE (prize_category, code_member, year) VALUES ('student', 10, 2021);
+
+-- BOARD_ASS for TechUnion1
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('TechUnion1', 1, 1);
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('TechUnion1', 11, 2);
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('TechUnion1', 12, 3);
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('TechUnion1', 13, 4);
+
+-- BOARD_ASS for InnoGroup2
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('InnoGroup2', 2, 1);
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('InnoGroup2', 14, 2);
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('InnoGroup2', 15, 3);
+INSERT INTO BOARD_ASS (name_association, code_member, code_board) VALUES ('InnoGroup2', 16, 4);
+
+-- BOARD_CONF
+INSERT INTO BOARD_CONF (code_member, code_board) VALUES (1, 1);
+INSERT INTO BOARD_CONF (code_member, code_board) VALUES (2, 2);
+INSERT INTO BOARD_CONF (code_member, code_board) VALUES (3, 3);
+INSERT INTO BOARD_CONF (code_member, code_board) VALUES (4, 4);
+
+-- MEMBERS_FEE (trigger 2 is working)
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (1, 1, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (2, 2, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (3, 3, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (4, 4, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (5, 1, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (6, 2, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (7, 3, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (8, 4, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (9, 1, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (10, 1, 2023);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (10, 2, 2022);
+INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (10, 2, 2021);
+
+-- INSERT INTO MEMBERS_FEE (code_member, code_fee, year) VALUES (17, 2, 2021);
+
+-- NETWORKS_CONFEDERATION
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (1, 'http://uri1.com', 1);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (2, 'http://uri2.com', 2);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (3, 'http://uri3.com', 3);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (4, 'http://uri1.com', 4);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (5, 'http://uri2.com', 5);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (6, 'http://uri3.com', 6);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (7, 'http://uri1.com', 7);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (8, 'http://uri2.com', 8);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (9, 'http://uri3.com', 9);
+INSERT INTO NETWORKS_CONFEDERATION (code_social_network, URI, community) VALUES (10, 'http://uri3.com', 10);
+   
+-- NETWORKS_ASSOCIATION
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (1, 'TechUnion1', 'http://techunion1.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (2, 'InnoGroup2', 'http://innogroup2.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (3, 'SoftSociety3', 'http://softsociety3.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (4, 'DataClub4', 'http://DataClub4.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (5, 'NetWorks5', 'http://NetWorks5.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (6, 'FutureTech6', 'http://FutureTech6.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (7, 'SmartSolutions7', 'http://SmartSolutions7.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (8, 'AIConsortium8', 'http://AIConsortium8.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (9, 'CyberCircle9', 'http://CyberCircle9.com');
+INSERT INTO NETWORKS_ASSOCIATION (code_social_network, association_name, URI) VALUES (10, 'UIUXGuild10', 'http://UIUXGuild10.com');
